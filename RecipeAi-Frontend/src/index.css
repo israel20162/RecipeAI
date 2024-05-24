@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+body {
+  margin: 0;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[x-cloak] {
+		display:none
+		}
+    .no-scrollbar::-webkit-scrollbar{
+    display:none;
+    }
+    .no-scrollbar::-moz-scrollbar{
+    moz-scrollbar:none;
+    display:none}
+    .no-scrollbar{
+   
+    scrollbar-width:none !important;
+   -ms-overflow-style:none
+    }
+    
+@layer components{
+    .no-scrollbar::-webkit-scrollbar{
+    display:none;
+    }
+    .no-scrollbar{
+    -ms-overflow-style:none;
+    scrollbar-width:none}
+    }
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  margin:10px 0;
+  border-radius:5px
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+

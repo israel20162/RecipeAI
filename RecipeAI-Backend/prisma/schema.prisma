@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int            @id @default(autoincrement())
+  email             String         @unique
+  name              String?
+  password          String // consider storing hashed passwords
+  profileImage      String? // Optional profile image
+  recipes           Recipe[]
+  reviews           Review[] // assuming you might have a Recipe model linked to users
+  bookmarkedRecipes RecipeonUser[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  ratings           Rating[]
+}
+
+model Recipe {
+  id              Int            @id @default(autoincrement())
+  title           String
+  description     String
+  instructions    String         @default("")
+  youtube_link    String         @default("")
+  imageUrl        String
+  upvotes         Int            @default(0)
+  downvotes       Int            @default(0)
+  time_to_prepare Int            @default(0)
+  difficulty      String         @default("easy")
+  ratings         Rating[]
+  is_featured     Boolean        @default(false)
+  category        Category       @relation(fields: [categoryId], references: [id])
+  categoryId      Int            @default(1)
+  reviews         Review[]
+  author          User           @relation(fields: [authorId], references: [id])
+  authorId        Int
+  bookmarkedBy    RecipeonUser[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  ingredients     String
+}
+
+model RecipeonUser {
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     Int // relation scalar field (used in the `@relation` attribute above)
+  recipe     Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  recipeId   Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([userId, recipeId])
+}
+
+model Rating {
+  id       Int    @id @default(autoincrement())
+  value    Int // The rating value, e.g., from 1 to 5
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  recipeId Int
+}
+
+// model Ingredient {
+//   id          Int                    @id @default(autoincrement())
+//   title       String
+//   measurement String
+//   thumbnail   String                 @default("")
+//   recipes     IngredientsOnRecipes[]
+// }
+
+// model IngredientsOnRecipes {
+//   recipe       Recipe     @relation(fields: [recipeId], references: [id])
+//   recipeId     Int // relation scalar field (used in the `@relation` attribute above)
+//   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+//   ingredientId Int // relation scalar field (used in the `@relation` attribute above)
+//   assignedAt   DateTime   @default(now())
+//   assignedBy   String
+
+//   @@id([recipeId, ingredientId])
+// }
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  title     String
+  recipes   Recipe[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  recipeId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
